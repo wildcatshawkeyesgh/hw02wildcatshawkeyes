@@ -10,34 +10,57 @@ Description:
 """
 
 import torch
+from torch import nn
 import numpy as np
 from typing import List, Tuple, Optional
 
-__all__ = ['example_function']
+__all__ = ["example_function"]
 
 
-def example_function(data: List[float], epochs: int = 1000) -> Tuple[torch.Tensor, ...]:
-    """
-    Example function template.
+class SimpleNN(nn.Module):
+    def __init__(self, in_features, m):  # m is the number of classifications
+        super(SimpleNN, self).__init__()
+        self.in_features = in_features
+        self.fc1 = nn.Linear(self.in_features, 64)
+        self.fc2 = nn.Linear(64, 128)
+        self.fc3 = nn.Linear(128, 16)
+        self.fc4 = nn.Linear(16, m) # check m vs m-1
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.relu(self.fc3(x))
+        x = self.fc4(x)
+        return x
+
+
+class ClassTrainer:
+    def __init__(
+        self, X_train, Y_train, eta, epoch,
+        loss, optimizer, model, device):
+
+        self.X_train = X_train
+        self.Y_train = Y_train
+        self.eta = eta
+        self.epoch = epoch
+        self.loss = loss
+        self.optimizer = optimizer
+        self.model = model
+        self.device = device
+        self.loss_vector = torch.zeros(epoch)
+        self.accuracy_vector = torch.zeros(epoch)
     
-    Parameters:
-    -----------
-    data : List[float]
-        Input data for processing
-    epochs : int, optional
-        Number of training epochs (default: 1000)
+    def train(self):
     
-    Returns:
-    --------
-    Tuple[torch.Tensor, ...]
-        Processed results
+    def test(self, X_test, y_test):
     
-    Example:
-    --------
-    >>> result = example_function([1.0, 2.0, 3.0])
-    """
-    # TODO: Implement your function here
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    tensor_data = torch.tensor(data, device=device, dtype=torch.float32)
+    def predict(self, X):
     
-    return (tensor_data,)
+    def save(self, file_name=None):
+    
+    def evaluation(self, loss_vector, accuracy_vector):
+        
+        
+
+    

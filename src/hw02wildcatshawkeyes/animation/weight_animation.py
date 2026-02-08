@@ -141,7 +141,7 @@ def animate_weight_heatmap(
 
     # Specify the file name (do not include .mp4, Manim adds it)
     config.output_file = file_name
-
+    print(matrix_stack.shape)
     # Create an object of WeightMatrixAnime
     scene = WeightMatrixAnime(matrix_stack, dt=dt, title_str=title_str)
     scene.render()

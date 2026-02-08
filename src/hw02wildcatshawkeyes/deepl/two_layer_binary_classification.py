@@ -55,6 +55,11 @@ def binary_classification(d, n, epochs=10000, eta=0.001):
 
     train_losses = torch.zeros(epochs, device=device)
 
+    W1_total = torch.zeros(epochs, d, 48, device=device)
+    W2_total = torch.zeros(epochs, 48, 16, device=device)
+    W3_total = torch.zeros(epochs, 16, 32, device=device)
+    W4_total = torch.zeros(epochs, 32, 1, device=device)
+
     for epoch in range(epochs):
         Z1 = torch.matmul(X, W1)
         Z1 = torch.matmul(Z1, W2)
@@ -74,6 +79,10 @@ def binary_classification(d, n, epochs=10000, eta=0.001):
             W3 -= eta * W3.grad
             W4 -= eta * W4.grad
 
+            W1_total[epoch] = W1.clone()
+            W2_total[epoch] = W2.clone()
+            W3_total[epoch] = W3.clone()
+            W4_total[epoch] = W4.clone()
             # Zero the gradients
             W1.grad.zero_()
             W2.grad.zero_()
@@ -85,4 +94,4 @@ def binary_classification(d, n, epochs=10000, eta=0.001):
         if epoch % 100 == 0:
             print(f"Epoch {epoch} loss: {train_loss.item():.4f}")
 
-    return [train_losses, W1, W2, W3, W4]
+    return [train_losses, W1_total, W2_total, W3_total, W4_total]
