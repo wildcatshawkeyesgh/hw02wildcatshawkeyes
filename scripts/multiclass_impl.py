@@ -59,12 +59,22 @@ columns_exclude = [
 all_columns = pd.read_csv(file_location, nrows=0).columns.tolist()
 columns = [col for col in all_columns if col not in columns_exclude]
 
+df_X = pd.read_csv(file_location, usecols=columns, low_memory=False)
 df_y = pd.read_csv(file_location, usecols=["Label"])
 
-df_X = pd.read_csv(
-    file_location, usecols=columns
-)  # might need to change path for use on windows check here if you get errors when running on hpc
+# Convert to numeric
+df_X = df_X.apply(pd.to_numeric, errors="coerce")
 
+# Count rows before
+rows_before = len(df_X)
+
+# Drop rows with NaN
+df_X = df_X.dropna()
+df_y = df_y.loc[df_X.index]  # Keep y aligned with X
+
+# Print how many dropped
+rows_dropped = rows_before - len(df_X)
+print(f"Dropped {rows_dropped} rows with NaN values")
 X_train, X_test, y_train, y_test = train_test_split(
     df_X, df_y, test_size=0.2, random_state=42
 )
