@@ -18,7 +18,7 @@ import sys
 import getopt
 import os
 
-file_location = "../data/Andorid_Malware.csv"
+file_location = "/home/pzs0001/hw02wildcatshawkeyes/data/Andorid_Malware.csv"
 device = "cpu"
 if torch.cuda.is_available():
     device = "cuda"
