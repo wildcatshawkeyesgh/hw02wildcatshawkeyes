@@ -62,7 +62,7 @@ columns = [col for col in all_columns if col not in columns_exclude]
 df_X = pd.read_csv(file_location, usecols=columns, low_memory=False)
 df_y = pd.read_csv(file_location, usecols=["Label"])
 
-
+print(df_X.isna().sum())
 df_X = df_X.apply(pd.to_numeric, errors="coerce")
 
 rows_before = len(df_X)
