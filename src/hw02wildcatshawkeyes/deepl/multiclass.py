@@ -55,8 +55,8 @@ class ClassTrainer:
         self.optimizer = optimizer
         self.model = model
         self.device = device
-        self.loss_vector = torch.none(epoch)
-        self.accuracy_vector = torch.none(epoch)
+        self.loss_vector = torch.zeros(epoch)
+        self.accuracy_vector = torch.zeros(epoch)
 
     def train(self):
         for i in range(self.epoch):
@@ -90,7 +90,7 @@ class ClassTrainer:
         dummy_input = torch.zeros(1, self.X_train.shape[1])
         torch.onnx.export(self.model, dummy_input, file_name)
 
-    def evaluation(self, loss_vector, accuracy_vector):
+    def evaluation(self, X_test, y_test):
 
         plt.figure()
         plt.plot(self.loss_vector.numpy())
