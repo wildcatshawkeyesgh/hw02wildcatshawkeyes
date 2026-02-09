@@ -46,47 +46,12 @@ for opt, val in opts:
         device = val
 
 
-columns_exclude = [
-    "Unnamed: 0",
-    "Flow ID",
-    " Source IP",
-    " Source Port",
-    " Destination IP",
-    " Destination Port",
-    " Protocol",
-    " Timestamp",
-    " Label",
-]
+df = pd.read_csv(file_location, low_memory=False)
+df = df.iloc[:, 9:]  # Drop first 9 columns
+df.columns = df.columns.str.strip()
 
-all_columns = pd.read_csv(file_location, nrows=0).columns.tolist()
-columns = [col for col in all_columns if col not in columns_exclude]
-
-df_X = pd.read_csv(file_location, usecols=columns, low_memory=False)
-df_y = pd.read_csv(file_location, usecols=["Label"])
-
-print(df_X.isna().sum())
-df_X = df_X.apply(pd.to_numeric, errors="coerce")
-print(f"Total rows in file: {len(df_X)}")
-print(f"Rows with any NaN: {df_X.isna().any(axis=1).sum()}")
-print(
-    f"Rows with any Inf: {(df_X == np.inf).any(axis=1).sum() + (df_X == -np.inf).any(axis=1).sum()}"
-)
-rows_before = len(df_X)
-valid_rows = df_X.dropna().index
-
-
-df_X = df_X.loc[valid_rows].reset_index(drop=True)
-df_y = df_y.loc[valid_rows].reset_index(drop=True)
-
-rows_dropped = rows_before - len(df_X)
-print(f"Dropped {rows_dropped} rows with NaN values")
-print("Columns in file:", all_columns[:10])
-print("Columns excluded:", columns_exclude)
-print("Columns used:", columns[:10])
-X_train, X_test, y_train, y_test = train_test_split(
-    df_X, df_y, test_size=0.2, random_state=42
-)
-
+df_y = df[["Label"]]
+df_X = df.drop(columns=["Label"])
 malware_classes = [
     "Android_Adware",
     "Android_Scareware",
