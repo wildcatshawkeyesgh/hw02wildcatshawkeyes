@@ -17,6 +17,7 @@ from datetime import datetime
 import sys
 import getopt
 import os
+import numpy as np
 
 file_location = "/home/pzs0001/hw02wildcatshawkeyes/data/Android_Malware.csv"
 device = "cpu"
