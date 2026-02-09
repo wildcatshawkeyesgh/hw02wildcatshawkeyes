@@ -54,6 +54,7 @@ columns_exclude = [
     "Protocol",
     "Timestamp",
     "Label",
+    "Unnamed:0",
 ]
 
 all_columns = pd.read_csv(file_location, nrows=0).columns.tolist()
