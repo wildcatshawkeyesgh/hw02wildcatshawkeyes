@@ -78,7 +78,9 @@ print(f"Dropped {rows_dropped} rows with NaN values")
 X_train, X_test, y_train, y_test = train_test_split(
     df_X, df_y, test_size=0.2, random_state=42
 )
-
+print("Columns in file:", all_columns[:10])
+print("Columns excluded:", columns_exclude)
+print("Columns used:", columns[:10])
 malware_classes = [
     "Android_Adware",
     "Android_Scareware",
