@@ -52,6 +52,23 @@ df.columns = df.columns.str.strip()
 
 df_y = df[["Label"]]
 df_X = df.drop(columns=["Label"])
+
+# Convert to numeric and handle NaN
+df_X = df_X.apply(pd.to_numeric, errors="coerce")
+df_X = df_X.replace([np.inf, -np.inf], np.nan)
+
+rows_before = len(df_X)
+valid_rows = df_X.dropna().index
+df_X = df_X.loc[valid_rows].reset_index(drop=True)
+df_y = df_y.loc[valid_rows].reset_index(drop=True)
+
+rows_dropped = rows_before - len(df_X)
+print(f"Dropped {rows_dropped} rows with NaN values")
+
+# Add this line
+X_train, X_test, y_train, y_test = train_test_split(
+    df_X, df_y, test_size=0.2, random_state=42
+)
 malware_classes = [
     "Android_Adware",
     "Android_Scareware",
