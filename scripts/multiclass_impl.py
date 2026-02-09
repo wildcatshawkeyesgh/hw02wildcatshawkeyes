@@ -62,20 +62,21 @@ columns = [col for col in all_columns if col not in columns_exclude]
 df_X = pd.read_csv(file_location, usecols=columns, low_memory=False)
 df_y = pd.read_csv(file_location, usecols=["Label"])
 
-# Convert to numeric
+
 df_X = df_X.apply(pd.to_numeric, errors="coerce")
 
-# Find rows with NaN
 rows_before = len(df_X)
 valid_rows = df_X.dropna().index
 
-# Keep only valid rows in both
+
 df_X = df_X.loc[valid_rows].reset_index(drop=True)
 df_y = df_y.loc[valid_rows].reset_index(drop=True)
 
 rows_dropped = rows_before - len(df_X)
 print(f"Dropped {rows_dropped} rows with NaN values")
-
+X_train, X_test, y_train, y_test = train_test_split(
+    df_X, df_y, test_size=0.2, random_state=42
+)
 
 malware_classes = [
     "Android_Adware",
