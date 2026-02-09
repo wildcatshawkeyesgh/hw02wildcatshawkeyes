@@ -46,15 +46,15 @@ for opt, val in opts:
 
 
 columns_exclude = [
+    "Unnamed: 0",
     "Flow ID",
-    "Source IP",
-    "Source Port",
-    "Destination IP",
-    "Destination Port",
-    "Protocol",
-    "Timestamp",
-    "Label",
-    "Unnamed:0",
+    " Source IP",
+    " Source Port",
+    " Destination IP",
+    " Destination Port",
+    " Protocol",
+    " Timestamp",
+    " Label",
 ]
 
 all_columns = pd.read_csv(file_location, nrows=0).columns.tolist()
