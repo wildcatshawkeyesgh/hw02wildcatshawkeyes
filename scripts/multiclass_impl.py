@@ -65,7 +65,11 @@ df_y = pd.read_csv(file_location, usecols=["Label"])
 
 print(df_X.isna().sum())
 df_X = df_X.apply(pd.to_numeric, errors="coerce")
-
+print(f"Total rows in file: {len(df_X)}")
+print(f"Rows with any NaN: {df_X.isna().any(axis=1).sum()}")
+print(
+    f"Rows with any Inf: {(df_X == np.inf).any(axis=1).sum() + (df_X == -np.inf).any(axis=1).sum()}"
+)
 rows_before = len(df_X)
 valid_rows = df_X.dropna().index
 
