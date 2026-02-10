@@ -29,9 +29,12 @@ print(device)
 eta = 0.01
 epoch = 10000
 keyword = "hw02"
-
+loss_type = "crossentropy"
+optimizer_type = "adam"
 opts, args = getopt.getopt(
-    sys.argv[1:], "", ["file=", "eta=", "epoch=", "keyword=", "device="]
+    sys.argv[1:],
+    "",
+    ["file=", "eta=", "epoch=", "keyword=", "device=", "loss=", "optimizer="],
 )
 for opt, val in opts:
     if opt == "--file":
@@ -44,16 +47,20 @@ for opt, val in opts:
         keyword = val
     elif opt == "--device":
         device = val
+    elif opt == "--loss":
+        loss_type = val
+    elif opt == "--optimizer":
+        optimizer_type = val
 
 
 df = pd.read_csv(file_location, low_memory=False)
-df = df.iloc[:, 9:]  # Drop first 9 columns
+df = df.iloc[:, 9:]
 df.columns = df.columns.str.strip()
 
 df_y = df[["Label"]]
 df_X = df.drop(columns=["Label"])
 
-# Convert to numeric and handle NaN
+
 df_X = df_X.apply(pd.to_numeric, errors="coerce")
 df_X = df_X.replace([np.inf, -np.inf], np.nan)
 
@@ -65,7 +72,7 @@ df_y = df_y.loc[valid_rows].reset_index(drop=True)
 rows_dropped = rows_before - len(df_X)
 print(f"Dropped {rows_dropped} rows with NaN values")
 
-# Add this line
+
 X_train, X_test, y_train, y_test = train_test_split(
     df_X, df_y, test_size=0.2, random_state=42
 )
@@ -89,8 +96,14 @@ y_test_tensor = torch.tensor(y_test_encoded, dtype=torch.long)
 
 
 model = deepl.multiclass.SimpleNN(X_train_tensor.shape[1], len(malware_classes))
-loss = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=eta)
+
+if loss_type == "crossentropy":
+    loss = nn.CrossEntropyLoss()
+if optimizer_type == "adam":
+    optimizer = optim.Adam(model.parameters(), lr=eta)
+elif optimizer_type == "sgd":
+    optimizer = optim.SGD(model.parameters(), lr=eta)
+
 trainer = deepl.multiclass.ClassTrainer(
     X_train=X_train_tensor,
     Y_train=y_train_tensor,
@@ -100,7 +113,7 @@ trainer = deepl.multiclass.ClassTrainer(
     optimizer=optimizer,
     model=model,
     device=device,
-)  # add params later
+)
 trainer.train()
 train_acc, train_prec, train_rec, train_f1, test_acc, test_prec, test_rec, test_f1 = (
     trainer.evaluation(X_test_tensor, y_test_tensor)
